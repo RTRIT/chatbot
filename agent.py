@@ -84,7 +84,7 @@ class CleanSQLDatabaseChain(SQLDatabaseChain):
 # db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True, memory=memory)
 
 db_chain = CleanSQLDatabaseChain.from_llm(llm, db, verbose=True)
-db_chain._sql_database.run = db_chain.sql_database_run  # 🔧 Add this line
+# db_chain._sql_database.run = db_chain.sql_database_run  # 🔧 Add this line
 # Override the run method with the cleaned one
 # db_chain.sql_database.run = db_chain.sql_database_run
 
@@ -95,6 +95,10 @@ llm_math_chain = LLMMathChain.from_llm(llm=llm, verbose=True)
 serpapi_api_key = os.getenv('SERPAPI_API_KEY')
 search = SerpAPIWrapper(serpapi_api_key=serpapi_api_key)
 
+def cleaned_sql_executor(query: str) -> str:
+    cleaned_query = clean_sql_code(query)
+    print(f"[Executing cleaned SQL]: {cleaned_query}")  # Optional debug
+    return db.run(cleaned_query)  # ✅ FIXED: call the method with the query
 
 tools = [
     Tool(
@@ -112,6 +116,11 @@ tools = [
         func=db_chain.run,
         description="useful for when you need to answer questions about FooBar. Input should be in the form of a question containing full context",
     ),
+    Tool(
+        name="SQLExecutor",
+        func=cleaned_sql_executor,
+        description="Executes SQL queries on the Chinook database."
+    )
 ]
 
 
@@ -130,6 +139,14 @@ agent = initialize_agent(
     agent_kwargs=agent_kwargs,
     memory=memory,
 )
+
+
+
+def clean_sql_code(sql: str) -> str:
+    # Strip markdown-style code blocks like ```sql ... ```
+    return re.sub(r"^```(?:sql)?\s*|```$", "", sql.strip(), flags=re.MULTILINE)
+ 
+
 
 
 # Define the handle_chat function
@@ -162,7 +179,7 @@ def calculate_cost(query, model, response):
 
 # %%
 # Example usage 01
-# query = 'How many artists are there in our database?'
+# query = 'How many Artists are there in our database?'
 # response = handle_chat(query)
 # print(response) 
 # query2 = 'Select * from Artist where ArtistId = 1'
@@ -172,7 +189,14 @@ def calculate_cost(query, model, response):
 # print("Cost of this prompt: " + str(cost) )
 
 
+
+# query = "How many artists are there in our database?"
+# response = handle_chat(query)
+# print(response)
+
 # %% [markdown]
 # UI For Chatbot
 
 # %%
+
+#testikng
