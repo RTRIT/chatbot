@@ -3,7 +3,7 @@
 #Create virtual environment
 python -m venv myenv
 
-#Activate the virtual env
+#Activate the virtual env:
 #Window
 myenv\Scripts\activate
 #macos/Linux
