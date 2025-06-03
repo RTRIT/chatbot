@@ -11,3 +11,6 @@ source myenv/bin/activate
 
 #Install package for repo
 pip install -r requirement.txt
+
+
+#Them api key của openai và serpapi vào file .env
