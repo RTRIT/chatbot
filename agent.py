@@ -179,12 +179,12 @@ def calculate_cost(query, model, response):
 
 # %%
 # Example usage 01
-# query = 'How many Artists are there in our database?'
+# query = 'How many Artist are there in our database?'
 # response = handle_chat(query)
 # print(response) 
-# query2 = 'Select * from Artist where ArtistId = 1'
-# response2 = handle_chat(query2)
-# print(response2) 
+query2 = 'Select * from Artist where ArtistId = 2'
+response2 = handle_chat(query2)
+print(response2) 
 # cost = calculate_cost(query, llm.model_name ,response)
 # print("Cost of this prompt: " + str(cost) )
 
